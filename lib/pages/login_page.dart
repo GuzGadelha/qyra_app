@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qyra_app/auth/auth_service.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
@@ -48,6 +49,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -61,13 +66,13 @@ class _LoginPageState extends State<LoginPage> {
               // logo qyra
               Container(
                 alignment: Alignment.centerLeft,
-                child: Image.asset(
-                    'assets/images/logo_qyra.png',
-                    height: 24,
+                child: SvgPicture.asset(
+                    'assets/images/logo_qyra.svg',
+                    height: AppSpacing.m,
                     fit: BoxFit.contain,
                   ),
               ),
-              //
+              // space
               const SizedBox(height: AppSpacing.m),
               // email
               // e-mail text above the field
@@ -111,7 +116,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
-
               // password
               // password text above the field
               const Text(
@@ -152,6 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                       color: AppColors.primaryPurple,
                     ),
                   ),
+                  // hide password icon
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
@@ -165,7 +170,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-
               // error message
               if (_hasError) ...[
                 const SizedBox(height: AppSpacing.xs),
@@ -177,7 +181,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ],
-
               // forgot password
               Align(
                 alignment: Alignment.centerRight,
@@ -192,8 +195,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.xl),
-
+              // space
+              const SizedBox(height: AppSpacing.lps),
               // terms of use text
               const Text(
                 "Acessando a sua conta QYRA, você concorda com os nossos Termos de Uso e as nossas Políticas de Privacidade",

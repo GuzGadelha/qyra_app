@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   supabase_flutter: ^2.12.2
+  flutter_svg: ^2.2.4
 
 dev_dependencies:
   flutter_test:
@@ -60,7 +61,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/logo_qyra.png
+    - assets/images/logo_qyra.svg
+    - assets/images/logo_qyra_vertical.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
