@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qyra_app/auth/auth_service.dart';
+import 'package:qyra_app/pages/register_page.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
 
@@ -49,11 +50,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      //
       appBar: AppBar(
         backgroundColor: Colors.white,
-
       ),
-      backgroundColor: Colors.white,
+      //
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
@@ -245,7 +247,13 @@ class _LoginPageState extends State<LoginPage> {
 
               // create account button
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  //  Navigator to register page
+                  Navigator.push(
+                  context,
+                    MaterialPageRoute(builder: (context) => const RegisterPage(),)
+                  );
+                },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.secondaryPeach,
                   padding: const EdgeInsets.symmetric(

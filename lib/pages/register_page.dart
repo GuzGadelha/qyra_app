@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:qyra_app/auth/auth_service.dart';
+import 'package:qyra_app/pages/sucess_page.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
 
@@ -13,35 +15,73 @@ class RegisterPage  extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage > {
   // get auth service
   final authService = AuthService();
+
   // text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  // variable for obscure password
-  bool _obscurePassword = true;
-  // variable for password error
-  bool _hasError = false;
-  // Colors
-  final Color primaryPurple = const Color(0xFF5A4B69);
-  final Color secondaryPeach = const Color(0xFFD6B5A7);
+
+  // variable for dynamic error messages
+  bool _emailAlreadyInUse = false;
+  String? _errorMessage;
 
   // login button pressed
-  void login() async {
+  void register() async {
     // prepare data
     final email = _emailController.text;
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
+
     // attempt register...
     try {
       setState(() {
         // clean incorrect data entries
-        _hasError = false;
+        _errorMessage = null;
+        _emailAlreadyInUse = false;
       });
-      await authService.signUpWithEmailPassword(email, password);
+
+      // check if passwords match BEFORE trying to register
+      if (password != confirmPassword) {
+        setState(() {
+          _errorMessage = "As senhas que você digitou não são iguais";
+        });
+        return; // stop's execution here
+      }
+
+      //  Go´s to supabase and try to create a new user
+      final response = await authService.signUpWithEmailPassword(email, password);
+
+      if ((response.user != null) && (response.user!.identities != null) && (response.user!.identities!.isEmpty)) {
+        setState(() {
+          // email already exists
+          _emailAlreadyInUse = true;
+        });
+        return;
+      }
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const SuccessPage(),
+          ),
+        );
+      }
+
     } catch (e) {
       setState(() {
-        // show's error message
-        _hasError = true;
+        final errorText = e.toString().toLowerCase();
+        if (errorText.contains("already registered") ||
+            errorText.contains("user already exists") ||
+            errorText.contains("já cadastrado") ||
+            errorText.contains("already been registered")) {
+          _emailAlreadyInUse = true;
+          _errorMessage = null;
+        } else {
+          _emailAlreadyInUse = false;
+          // TRUQUE DE DETETIVE: Vamos jogar o erro cru na tela para você ler!
+          _errorMessage = "ERRO REAL: $errorText";
+        }
       });
     }
   }
@@ -58,23 +98,46 @@ class _RegisterPageState extends State<RegisterPage > {
       //
       body: SafeArea(
         child: SingleChildScrollView(
+
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.m,
-            vertical: AppSpacing.l,
+            vertical: AppSpacing.m,
           ),
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // logo qyra
-              const SizedBox(height: AppSpacing.l,),
-                Center(
-                child: Image.asset(
+              Container(
+                alignment: Alignment.centerLeft,
+                child: SvgPicture.asset(
                   'assets/images/logo_qyra.svg',
-                  height: 120,
+                  height: 26,
                 ),
               ),
-              //
+
+              SizedBox(height: AppSpacing.m),
+
+              //  Text over email
+              const Text(
+                "Dados de login para sua conta",
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight(500),
+                ),
+              ),
+
+              // sub text
+              const Text(
+                  "Preencha os campos para criar a sua conta",
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+
+              //  space
               const SizedBox(height: AppSpacing.m),
+
               // email
               // e-mail text above the field
               const Text(
@@ -86,28 +149,40 @@ class _RegisterPageState extends State<RegisterPage > {
               const SizedBox(height: AppSpacing.xs),
               // text field for e-mail
               TextField(
-                controller: _emailController,
+                controller: _emailController,  //  email controller
+
+                //  input decoration
                 decoration: InputDecoration(
-                  hintText: "Informe aqui o seu e-mail",
+                  hintText: "Informe aqui o seu e-mail",   //  placeholder text
+
+                  //  text style
                   hintStyle: const TextStyle(
                     color: AppColors.textHint,
                   ),
+
+                  //  internal padding
                   contentPadding:  const EdgeInsets.symmetric(
                     horizontal: AppSpacing.s,
                     vertical: AppSpacing.s,
                   ),
+
+                  //  default border
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color: AppColors.borderLight,
                     ),
                   ),
+
+                  // border when not focused
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color: AppColors.borderLight,
                     ),
                   ),
+
+                  //  border when focused
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
@@ -116,61 +191,12 @@ class _RegisterPageState extends State<RegisterPage > {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.m),
 
-              // password
-              // password text above the field
-              const Text(
-                "Senha",
-                style: TextStyle(
-                    color: AppColors.textPrimary
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              // text field for password
-              TextField(
-                controller: _passwordController,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  hintText: "Crie uma senha para a sua conta",
-                  hintStyle: const TextStyle(
-                    color: AppColors.textHint,
-                  ),
-
-                  contentPadding:  const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.s,
-                    vertical: AppSpacing.s,
-                  ),
-
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: AppColors.borderLight,
-                    ),
-                  ),
-
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: AppColors.borderLight,
-                    ),
-                  ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: AppColors.primaryPurple,
-                    ),
-                  ),
-
-                ),
-              ),
-
-              // error message
-              if (_hasError) ...[
+              // email error message
+              if (_emailAlreadyInUse) ...[
                 const SizedBox(height: AppSpacing.xs),
-                const Text(
-                  "Ops! E-mail ou senha incorretos",
+                Text(
+                  "Ops! Já existe uma conta com esse e-mail",
                   style: TextStyle(
                     color: AppColors.errorRed,
                     fontSize: 12,
@@ -178,90 +204,162 @@ class _RegisterPageState extends State<RegisterPage > {
                 ),
               ],
 
+              //  space
+              const SizedBox(height: AppSpacing.m),
 
+              // password
+              // text above the field
+              const Text(
+                "Senha",
+                style: TextStyle(
+                    color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              // text field for password
+              TextField(
+                controller: _passwordController,  //  password controllers
+                decoration: InputDecoration(      //  input decoration
 
+                  //  placeholder text
+                  hintText: "Crie uma senha para a sua conta",
+                  hintStyle: const TextStyle(
+                    color: AppColors.textHint,
+                    fontWeight: FontWeight.bold,
+                  ),
 
-              // forgot password
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    "Esqueceu a sua senha?",
-                    style: TextStyle(
-                        color: AppColors.secondaryPeach,
-                        fontWeight: FontWeight.bold
+                  //  internal padding
+                  contentPadding:  const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.s,
+                    vertical: AppSpacing.s,
+                  ),
+
+                  //  default border
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AppColors.borderLight,
+                    ),
+                  ),
+
+                  //  border when not focused
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AppColors.borderLight,
+                    ),
+                  ),
+
+                  //  border when focused
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AppColors.primaryPurple,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.xl),
 
-              // terms of use text
+              // space
+              const SizedBox(height: AppSpacing.m),
+
+              // confirm password
+              // text above the field
               const Text(
-                "Acessando a sua conta QYRA, você concorda com os nossos Termos de Uso e as nossas Políticas de Privacidade",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
+                "Confirmar senha",
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                  ),
+              ),
+
+              //  space
+              const SizedBox(height: AppSpacing.xs),
+
+              // text field for confirm password
+              TextField(
+                controller: _confirmPasswordController,
+                decoration: InputDecoration(
+                  //  internalText text and decoration
+                  hintText: "Digite novamente a senha cadastrada",
+                  hintStyle: const TextStyle(
+                    color: AppColors.textHint,
+                    fontWeight: FontWeight.bold,
+                  ),
+
+                  //  internal padding
+                  contentPadding:  const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.s,
+                    vertical: AppSpacing.s,
+                  ),
+
+                  //  default border
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AppColors.borderLight,
+                    ),
+                  ),
+
+                  //  border when not focused
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AppColors.borderLight,
+                    ),
+                  ),
+
+                  //  border when focused
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AppColors.primaryPurple,
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.s),
 
-              // login button
+              // different passwords error message
+              if (_errorMessage != null) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  _errorMessage!,
+                  style: TextStyle(
+                    color: AppColors.errorRed,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+
+              // space
+              const SizedBox(height: AppSpacing.rps),
+
+              // continue button
               ElevatedButton(
-                onPressed: login,
+                onPressed: register,
+
+                //  button style
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryPurple,
                   foregroundColor: Colors.white,
+
+                  // internal padding
                   padding: const EdgeInsets.symmetric(
                     vertical: AppSpacing.s,
                   ),
+
+                  //  rounded corners
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   elevation: 0,
                 ),
+
                 // button text
                 child: const Text(
-                  "Entrar na minha conta",
+                  "Continuar",
                   style: TextStyle(
                       fontSize: 16
                   ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.l),
-
-              // no account text
-              const Text(
-                "Ainda não possui uma conta? Crie uma agora mesmo",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary
-                ),
-              ),
-              const SizedBox(height: AppSpacing.s),
-
-              // create account button
-              OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.secondaryPeach,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.s
-                  ),
-                  side: BorderSide(
-                      color: AppColors.secondaryPeach
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                // button text
-                child: const Text(
-                    "Criar uma conta",
-                    style: TextStyle(fontSize: 16)
                 ),
               ),
             ],
