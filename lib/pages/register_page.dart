@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qyra_app/auth/auth_service.dart';
+import 'package:qyra_app/pages/home_page.dart';
 import 'package:qyra_app/pages/sucess_page.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
+import 'package:qyra_app/shared/purple_button.dart';
 
 class RegisterPage  extends StatefulWidget {
   const RegisterPage ({super.key});
@@ -25,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage > {
   bool _emailAlreadyInUse = false;
   String? _errorMessage;
 
-  // login button pressed
+  // register button pressed
   void register() async {
     // prepare data
     final email = _emailController.text;
@@ -51,14 +53,16 @@ class _RegisterPageState extends State<RegisterPage > {
       //  Go´s to supabase and try to create a new user
       final response = await authService.signUpWithEmailPassword(email, password);
 
+      //  checks if email is already in use
       if ((response.user != null) && (response.user!.identities != null) && (response.user!.identities!.isEmpty)) {
         setState(() {
           // email already exists
           _emailAlreadyInUse = true;
         });
-        return;
+        return; // stop's execution here
       }
 
+      //  if everything's ok then go to success page
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -70,7 +74,9 @@ class _RegisterPageState extends State<RegisterPage > {
 
     } catch (e) {
       setState(() {
+        //  error text
         final errorText = e.toString().toLowerCase();
+        //  email already in use error
         if (errorText.contains("already registered") ||
             errorText.contains("user already exists") ||
             errorText.contains("já cadastrado") ||
@@ -79,8 +85,7 @@ class _RegisterPageState extends State<RegisterPage > {
           _errorMessage = null;
         } else {
           _emailAlreadyInUse = false;
-          // TRUQUE DE DETETIVE: Vamos jogar o erro cru na tela para você ler!
-          _errorMessage = "ERRO REAL: $errorText";
+          _errorMessage = null;
         }
       });
     }
@@ -90,20 +95,24 @@ class _RegisterPageState extends State<RegisterPage > {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //  appBar with arrow do go back
       appBar: AppBar(
         backgroundColor: Colors.white,
       ),
-      //
+
+      //  background color
       backgroundColor: Colors.white,
-      //
+
+      //  screen content
       body: SafeArea(
         child: SingleChildScrollView(
-
+          //  screen padding
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.m,
             vertical: AppSpacing.m,
           ),
 
+          //  Content
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -116,7 +125,8 @@ class _RegisterPageState extends State<RegisterPage > {
                 ),
               ),
 
-              SizedBox(height: AppSpacing.m),
+              //  space
+              const SizedBox(height: AppSpacing.m),
 
               //  Text over email
               const Text(
@@ -147,6 +157,7 @@ class _RegisterPageState extends State<RegisterPage > {
                 ),
               ),
               const SizedBox(height: AppSpacing.xs),
+
               // text field for e-mail
               TextField(
                 controller: _emailController,  //  email controller
@@ -334,34 +345,11 @@ class _RegisterPageState extends State<RegisterPage > {
               const SizedBox(height: AppSpacing.rps),
 
               // continue button
-              ElevatedButton(
+              PurpleButton(
+                text: "Continuar",
                 onPressed: register,
-
-                //  button style
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryPurple,
-                  foregroundColor: Colors.white,
-
-                  // internal padding
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.s,
-                  ),
-
-                  //  rounded corners
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
-                ),
-
-                // button text
-                child: const Text(
-                  "Continuar",
-                  style: TextStyle(
-                      fontSize: 16
-                  ),
-                ),
               ),
+
             ],
           ),
         ),

@@ -5,6 +5,7 @@ Auth Gate - this will continuosly listen for auth state changes
 */
 
 import 'package:flutter/material.dart';
+import 'package:qyra_app/pages/home_page.dart';
 import 'package:qyra_app/pages/register_or_login_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/constants/app_spacing.dart';
@@ -35,32 +36,9 @@ class AuthGate extends StatelessWidget {
         final session = snapshot.hasData ? snapshot.data!.session : null;
 
         if (session != null) {
-          // Retorna uma tela temporária caso o usuário já esteja logado
-          return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Tela Home em construção..."),
-                  //
-                  const SizedBox(height: AppSpacing.m),
-                  //
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent,
-                      foregroundColor: Colors.white,
-                    ),  
-                    onPressed: () async {
-                      await Supabase.instance.client.auth.signOut();
-                    }, 
-                    child: const Text("Sair da conta"),
-                  ),
-                ],
-              ),
-            ),
-          );
+          return const HomePage();
         } else {
-          // Retorna a página de login se não houver sessão
+          // Retorn login page if there haven´t a session
           return const RegisterOrLoginPage();
         }
 

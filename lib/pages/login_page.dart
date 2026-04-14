@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qyra_app/auth/auth_service.dart';
+import 'package:qyra_app/pages/home_page.dart';
 import 'package:qyra_app/pages/register_page.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
+import 'package:qyra_app/shared/purple_button.dart';
+import 'package:qyra_app/shared/white_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,9 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscurePassword = true;
   // variable for password or email error
   bool _hasError = false;
-  // Colors
-  final Color primaryPurple = const Color(0xFF5A4B69);
-  final Color secondaryPeach = const Color(0xFFD6B5A7);
 
   // login button pressed
   void login() async {
@@ -37,7 +37,19 @@ class _LoginPageState extends State<LoginPage> {
         // clean incorrect data entries
         _hasError = false;
       });
+
+      //  waiting supabase authentication
       await authService.signInWithEmailPassword(email, password);
+
+      //  If it reaches here means that login was successful!
+      //  Now, navigate to the home page
+      if (mounted) {
+        Navigator.pushReplacement(
+            context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      }
+
     } catch (e) {
       setState(() {
         // show's error message
@@ -210,28 +222,12 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: AppSpacing.s),
 
-              // login button
-              ElevatedButton(
-                onPressed: login,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryPurple,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.s,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
-                ),
-                // button text
-                child: const Text(
-                    "Entrar na minha conta",
-                    style: TextStyle(
-                        fontSize: 16
-                    ),
-                ),
+              //  login button
+              PurpleButton(
+                  text: "Entrar na minha conta",
+                  onPressed: login,
               ),
+
               const SizedBox(height: AppSpacing.l),
 
               // no account text
@@ -246,31 +242,14 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: AppSpacing.s),
 
               // create account button
-              OutlinedButton(
-                onPressed: () {
-                  //  Navigator to register page
-                  Navigator.push(
-                  context,
-                    MaterialPageRoute(builder: (context) => const RegisterPage(),)
-                  );
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.secondaryPeach,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.s
-                  ),
-                  side: BorderSide(
-                      color: AppColors.secondaryPeach
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                // button text
-                child: const Text(
-                    "Criar uma conta",
-                    style: TextStyle(fontSize: 16)
-                ),
+              WhiteButton(
+                  text: "Criar uma conta",
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const RegisterPage(),)
+                    );
+                  },
               ),
             ],
           ),

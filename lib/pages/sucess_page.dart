@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
-
+import 'package:qyra_app/shared/purple_button.dart';
+import 'package:qyra_app/shared/white_button.dart';
 import 'home_page.dart';
 
 class SuccessPage extends StatelessWidget {
@@ -59,42 +60,27 @@ class SuccessPage extends StatelessWidget {
                 ],
               ),
             ),
+
             //  space
             const SizedBox(height: AppSpacing.sps),
+
             // continue button
             Padding(
-              padding: const EdgeInsets.all(9.0),
-              child: ElevatedButton(
-                onPressed: home,
-                //  button style
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryPurple,
-                  foregroundColor: Colors.white,
-
-                  // internal padding
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.s,
-                  ),
-
-                  //  rounded corners
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
-                ),
-
-                // button text
-                child: const Text(
-                  "Continuar",
-                  style: TextStyle(
-                      fontSize: 16
-                  ),
-                ),
+              padding: const EdgeInsets.only(
+                left: 12,
+                right: 12,
+                bottom: 16,
+              ),
+              child: PurpleButton(
+                  text: "Continuar",
+                  onPressed: () { //  Navigate to home page (finally)
+                    Navigator.pushReplacement(
+                    context,
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                    );
+                  },
               ),
             ),
-
-            const SizedBox(height: AppSpacing.m),
-
           ],
         ),
       ),

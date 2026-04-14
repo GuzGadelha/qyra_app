@@ -5,6 +5,9 @@ import 'package:qyra_app/core/constants/app_spacing.dart';
 import 'package:qyra_app/pages/login_page.dart';
 import 'package:qyra_app/pages/register_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qyra_app/shared/white_button.dart';
+
+import '../shared/purple_button.dart';
 
 class RegisterOrLoginPage extends StatefulWidget {
   const RegisterOrLoginPage({super.key});
@@ -21,12 +24,11 @@ class _RegisterOrLoginPageState extends State<RegisterOrLoginPage> {
         backgroundColor: Colors.white,
         body: SafeArea(
             child: SingleChildScrollView(
-              //
               padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.m,
                   vertical: AppSpacing.l
               ),
-              //
+
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -38,93 +40,68 @@ class _RegisterOrLoginPageState extends State<RegisterOrLoginPage> {
                       height: 120, // adjusted for the vertical logo
                     ),
                   ),
-                  //
-                const SizedBox(height: 60),
-                // Title
-                const Text(
+
+                  //  space
+                  const SizedBox(height: 60),
+
+                  //  title
+                  const Text(
                   "A mudança que você procura\ncomeça aqui!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.primaryPurple,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    height: 1.3,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.primaryPurple,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      height: 1.3,
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.m),
 
-                // Subtitle
-                const Text(
-                  "Facilite sua jornada de emagrecimento com\ntecnologia e especialistas sempre por perto.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 16,
-                    height: 1.5,
+                  //  space
+                  const SizedBox(height: AppSpacing.m),
+
+                  // Subtitle
+                  const Text(
+                    "Facilite sua jornada de emagrecimento com\ntecnologia e especialistas sempre por perto.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 16,
+                      height: 1.5,
+                    ),
                   ),
-                ),
 
-                // temporary spacing - adjust this value to push buttons down
+                // space
                 const SizedBox(height: AppSpacing.rlps),
 
                 // create account button
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterPage()
-                        ),
-                    );
-                  },
-                  // button style
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryPurple,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
+                  PurpleButton(
+                    text: "Criar uma conta",
+                    onPressed: () {
+                      Navigator.push(
+                          context, 
+                          MaterialPageRoute(builder: (context) => const RegisterPage())
+                      );
+                    },
                   ),
-                  child: const Text(
-                      "Criar uma conta",
-                      style: TextStyle(fontSize: 16)
-                  ),
-                ),
-                      const SizedBox(height: AppSpacing.s),
 
-                      // login button
-                      OutlinedButton(
-                        onPressed: () {
-                          // navigate to login page
-                          Navigator.push(
+                  //  space
+                  const SizedBox(height: AppSpacing.s),
+                      
+                  // login button
+                  WhiteButton(
+                      text: "Entrar na minha conta", 
+                      onPressed: () {
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const LoginPage()
+                                builder: (context) => const LoginPage(),
                             ),
-                          );
-                        },
-                        // button style
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.secondaryPeach,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: AppSpacing.s
-                          ),
-                          side: const BorderSide(
-                              color: AppColors.secondaryPeach
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text(
-                            "Entrar na minha conta",
-                            style: TextStyle(fontSize: 16)
-                        ),
-                      ),
-                    ],
-                ),
+                        );
+                      },
+                  ),
+
+                ],
+              ),
             ),
         ),
     );
