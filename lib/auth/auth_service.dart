@@ -1,5 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// Service class responsible for handling all authentication operations.
+/// Acts as a repository layer interacting directly with the Supabase client.
 class AuthService {
   final SupabaseClient _supabase = Supabase.instance.client;
 

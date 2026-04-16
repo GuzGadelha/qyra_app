@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
 
+/// A promotional card that invites users to watch an introductory video.
+/// Features a custom arched background, a floating avatar, and a call-to-action button.
 class WelcomeVideoCard extends StatelessWidget {
   final VoidCallback onWatchVideo;
   final VoidCallback onClose;
@@ -15,18 +17,22 @@ class WelcomeVideoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.m),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.m
+      ),
+
       child: Container(
         width: double.infinity,
-        // Top Background
         decoration: BoxDecoration(
           color: AppColors.lavender,
           borderRadius: BorderRadius.circular(20),
         ),
+
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
-            // Background Arch
+
+            // Layer 1: Arched Background
             Positioned.fill(
               child: ClipPath(
                 clipper: _ArchClipper(),
@@ -36,7 +42,7 @@ class WelcomeVideoCard extends StatelessWidget {
               ),
             ),
 
-            // Card Content
+            // Layer 2: Main Text and Actions
             Padding(
               padding: const EdgeInsets.only(
                 top: 105,
@@ -46,7 +52,8 @@ class WelcomeVideoCard extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // Title
+
+                  // Text Content
                   const Text(
                     "Você sabe tudo o que a QYRA\npode fazer por você?",
                     textAlign: TextAlign.center,
@@ -57,6 +64,7 @@ class WelcomeVideoCard extends StatelessWidget {
                       height: 1.2,
                     ),
                   ),
+
                   const SizedBox(height: 12),
 
                   // Subtitle
@@ -68,9 +76,10 @@ class WelcomeVideoCard extends StatelessWidget {
                       fontSize: 14,
                     ),
                   ),
+
                   const SizedBox(height: 16),
 
-                  // Time Indicator
+                  // Duration Badge
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -79,6 +88,7 @@ class WelcomeVideoCard extends StatelessWidget {
                       Text("< 3 min", style: TextStyle(color: Colors.white)),
                     ],
                   ),
+
                   const SizedBox(height: 20),
 
                   // Action Button
@@ -106,7 +116,7 @@ class WelcomeVideoCard extends StatelessWidget {
               ),
             ),
 
-            // Floating Avatar
+            // Layer 3: Floating Doctor Avatar
             Positioned(
               top: 20,
               left: 0,
@@ -114,17 +124,19 @@ class WelcomeVideoCard extends StatelessWidget {
               child: Container(
                 width: 72, // Total diameter (radius * 2)
                 height: 72,
+
                 decoration: BoxDecoration(
                   color: AppColors.darkPurple, // The border color
                   shape: BoxShape.circle,
                 ),
+
                 padding: const EdgeInsets.all(3), // Border width
+
                 child: Container(
                   // The inner circular holding the image
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      //  Doctor photo asset
                       image: AssetImage('assets/images/avatar.png'),
                     ),
                   ),
@@ -132,7 +144,7 @@ class WelcomeVideoCard extends StatelessWidget {
               ),
             ),
 
-            // Close Button
+            // Layer 4: Close Button
             Positioned(
               top: 15,
               right: 15,
@@ -152,12 +164,13 @@ class WelcomeVideoCard extends StatelessWidget {
   }
 }
 
-// Custom Clipper for the Arch background
+/// Creates a curved arch path using a quadratic Bezier curve.
 class _ArchClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
     path.moveTo(0, 110);
+    // Control point at the top center to create the curve
     path.quadraticBezierTo(size.width / 2, 0, size.width, 110);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);

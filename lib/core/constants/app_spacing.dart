@@ -1,4 +1,7 @@
+/// Utility class defining the standard spacing and sizing metrics
+/// used throughout the application to maintain visual consistency.
 class AppSpacing {
+  // private constructor, avoids instantiation
   AppSpacing._();
 
   static const double xs = 8.0;   // Extra Small
@@ -6,6 +9,7 @@ class AppSpacing {
   static const double m = 24.0;   // Medium
   static const double l = 40.0;   // Large
   static const double xl = 300.0;   // Large
+
   static const double lps = 170.0;  // Login page size
   static const double rlps = 270.0; // register-or-login page size
   static const double rps = 220.0;  // register page size

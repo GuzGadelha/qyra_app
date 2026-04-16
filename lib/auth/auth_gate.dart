@@ -1,29 +1,23 @@
-/* 
-Auth Gate - this will continuosly listen for auth state changes
-- unauthenticated = Login Page
-- authenticated = Profile Page
-*/
-
 import 'package:flutter/material.dart';
-import 'package:qyra_app/pages/home_page.dart';
-import 'package:qyra_app/pages/register_or_login_page.dart';
+import 'package:qyra_app/views/pages/home_page.dart';
+import 'package:qyra_app/views/pages/register_or_login_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../core/constants/app_spacing.dart';
-import '../pages/login_page.dart';
-import '../pages/register_or_login_page.dart';
 
+/// Acts as the main authentication router for the application.
+/// It continuously listens to Supabase auth state changes and directs the user
+/// to the [HomePage] if authenticated, or the [RegisterOrLoginPage] if not.
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context){
-    return StreamBuilder(
-      // Listen to auth state changes
+
+    // Auth state stream listener (Now strongly typed with <AuthState>)
+    return StreamBuilder<AuthState>(
       stream: Supabase.instance.client.auth.onAuthStateChange,  
       
-      // build appropriate page based on auth state
+      // loading state
       builder: (context, snapshot) {
-        // loading... screen
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(
@@ -31,14 +25,14 @@ class AuthGate extends StatelessWidget {
             ),
           );
         }
-        
-        // check if there is a valid session currently
+
+        // Check if there is a valid session currently
         final session = snapshot.hasData ? snapshot.data!.session : null;
 
+        // Route based on session existence
         if (session != null) {
           return const HomePage();
         } else {
-          // Retorn login page if there haven´t a session
           return const RegisterOrLoginPage();
         }
 
@@ -46,7 +40,4 @@ class AuthGate extends StatelessWidget {
     );
   }
 
-}
-
-class ProfilePage {
 }

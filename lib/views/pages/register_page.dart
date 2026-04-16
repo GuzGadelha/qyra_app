@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qyra_app/auth/auth_service.dart';
-import 'package:qyra_app/pages/home_page.dart';
-import 'package:qyra_app/pages/sucess_page.dart';
+import 'package:qyra_app/views/pages/sucess_page.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
-import 'package:qyra_app/shared/purple_button.dart';
+import 'package:qyra_app/views/shared/purple_button.dart';
 
+
+/// Screen responsible for registering a new user account.
+/// Captures email and password, validates them locally, and uses [AuthService]
+/// to create a new user in Supabase before navigating to [SuccessPage].
 class RegisterPage  extends StatefulWidget {
   const RegisterPage ({super.key});
 
@@ -15,19 +18,17 @@ class RegisterPage  extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage > {
-  // get auth service
-  final authService = AuthService();
+  final authService = AuthService();  // get auth service
 
-  // text controllers
-  final _emailController = TextEditingController();
+  final _emailController = TextEditingController();   // text controllers
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  // variable for dynamic error messages
-  bool _emailAlreadyInUse = false;
+  bool _emailAlreadyInUse = false;   // variable for dynamic error messages
   String? _errorMessage;
 
-  // register button pressed
+  /// Validates input fields and attempts to register the user via Supabase.
+  /// Handles password mismatch and "email already in use" errors gracefully.
   void register() async {
     // prepare data
     final email = _emailController.text;
@@ -37,32 +38,30 @@ class _RegisterPageState extends State<RegisterPage > {
     // attempt register...
     try {
       setState(() {
-        // clean incorrect data entries
         _errorMessage = null;
         _emailAlreadyInUse = false;
       });
 
-      // check if passwords match BEFORE trying to register
+      // Local Validation: Password match
       if (password != confirmPassword) {
         setState(() {
           _errorMessage = "As senhas que você digitou não são iguais";
         });
-        return; // stop's execution here
+        return;
       }
 
-      //  Go´s to supabase and try to create a new user
+      // Supabase Registration
       final response = await authService.signUpWithEmailPassword(email, password);
 
-      //  checks if email is already in use
+      // Validation: Email already in use check
       if ((response.user != null) && (response.user!.identities != null) && (response.user!.identities!.isEmpty)) {
         setState(() {
-          // email already exists
           _emailAlreadyInUse = true;
         });
-        return; // stop's execution here
+        return;
       }
 
-      //  if everything's ok then go to success page
+      // Success Navigation
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -74,9 +73,9 @@ class _RegisterPageState extends State<RegisterPage > {
 
     } catch (e) {
       setState(() {
-        //  error text
-        final errorText = e.toString().toLowerCase();
-        //  email already in use error
+        final errorText = e.toString().toLowerCase();   // Error handling and parsing
+
+        // Specific check for existing user/email conflict
         if (errorText.contains("already registered") ||
             errorText.contains("user already exists") ||
             errorText.contains("já cadastrado") ||
@@ -91,22 +90,17 @@ class _RegisterPageState extends State<RegisterPage > {
     }
   }
 
-  // UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //  appBar with arrow do go back
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
         backgroundColor: Colors.white,
       ),
 
-      //  background color
-      backgroundColor: Colors.white,
-
-      //  screen content
       body: SafeArea(
         child: SingleChildScrollView(
-          //  screen padding
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.m,
             vertical: AppSpacing.m,
@@ -116,6 +110,7 @@ class _RegisterPageState extends State<RegisterPage > {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+
               // logo qyra
               Container(
                 alignment: Alignment.centerLeft,
@@ -125,10 +120,9 @@ class _RegisterPageState extends State<RegisterPage > {
                 ),
               ),
 
-              //  space
               const SizedBox(height: AppSpacing.m),
 
-              //  Text over email
+              //  Header texts
               const Text(
                 "Dados de login para sua conta",
                 style: TextStyle(
@@ -137,7 +131,6 @@ class _RegisterPageState extends State<RegisterPage > {
                 ),
               ),
 
-              // sub text
               const Text(
                   "Preencha os campos para criar a sua conta",
                 style: TextStyle(
@@ -145,17 +138,17 @@ class _RegisterPageState extends State<RegisterPage > {
                 ),
               ),
 
-              //  space
               const SizedBox(height: AppSpacing.m),
 
-              // email
-              // e-mail text above the field
+              // email field
+
               const Text(
                 "E-mail",
                 style: TextStyle(
                   color: AppColors.textPrimary,
                 ),
               ),
+
               const SizedBox(height: AppSpacing.xs),
 
               // text field for e-mail
@@ -164,7 +157,7 @@ class _RegisterPageState extends State<RegisterPage > {
 
                 //  input decoration
                 decoration: InputDecoration(
-                  hintText: "Informe aqui o seu e-mail",   //  placeholder text
+                  hintText: "Informe aqui o seu e-mail",
 
                   //  text style
                   hintStyle: const TextStyle(
@@ -215,18 +208,19 @@ class _RegisterPageState extends State<RegisterPage > {
                 ),
               ],
 
-              //  space
               const SizedBox(height: AppSpacing.m),
 
-              // password
-              // text above the field
+              // password field
+
               const Text(
                 "Senha",
                 style: TextStyle(
                     color: AppColors.textPrimary,
                 ),
               ),
+
               const SizedBox(height: AppSpacing.xs),
+
               // text field for password
               TextField(
                 controller: _passwordController,  //  password controllers
@@ -271,11 +265,10 @@ class _RegisterPageState extends State<RegisterPage > {
                 ),
               ),
 
-              // space
               const SizedBox(height: AppSpacing.m),
 
-              // confirm password
-              // text above the field
+              // confirm password field
+
               const Text(
                 "Confirmar senha",
                   style: TextStyle(
@@ -283,7 +276,6 @@ class _RegisterPageState extends State<RegisterPage > {
                   ),
               ),
 
-              //  space
               const SizedBox(height: AppSpacing.xs),
 
               // text field for confirm password
@@ -341,7 +333,6 @@ class _RegisterPageState extends State<RegisterPage > {
                 ),
               ],
 
-              // space
               const SizedBox(height: AppSpacing.rps),
 
               // continue button

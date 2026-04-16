@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:qyra_app/auth/auth_service.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
-import 'package:qyra_app/pages/login_page.dart';
-import 'package:qyra_app/pages/register_page.dart';
+import 'package:qyra_app/views/pages/login_page.dart';
+import 'package:qyra_app/views/pages/register_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qyra_app/shared/white_button.dart';
-
+import 'package:qyra_app/views/shared/white_button.dart';
 import '../shared/purple_button.dart';
 
+/// Initial landing screen for unauthenticated users.
+/// Displays the app's value proposition and provides navigation paths
+/// to either create a new account or log in to an existing one.
 class RegisterOrLoginPage extends StatefulWidget {
   const RegisterOrLoginPage({super.key});
 
@@ -17,12 +18,12 @@ class RegisterOrLoginPage extends StatefulWidget {
 }
 
 class _RegisterOrLoginPageState extends State<RegisterOrLoginPage> {
-  // UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
+
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.m,
@@ -32,8 +33,10 @@ class _RegisterOrLoginPageState extends State<RegisterOrLoginPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  //  logo
-                  const SizedBox(height: AppSpacing.l), // top spacing
+
+                  const SizedBox(height: AppSpacing.l),
+
+                  //  Top logo
                   Center(
                     child: SvgPicture.asset(
                       'assets/images/logo_qyra_vertical.svg',
@@ -41,10 +44,9 @@ class _RegisterOrLoginPageState extends State<RegisterOrLoginPage> {
                     ),
                   ),
 
-                  //  space
                   const SizedBox(height: 60),
 
-                  //  title
+                  //  Title
                   const Text(
                   "A mudança que você procura\ncomeça aqui!",
                     textAlign: TextAlign.center,
@@ -56,7 +58,6 @@ class _RegisterOrLoginPageState extends State<RegisterOrLoginPage> {
                     ),
                   ),
 
-                  //  space
                   const SizedBox(height: AppSpacing.m),
 
                   // Subtitle
@@ -70,10 +71,9 @@ class _RegisterOrLoginPageState extends State<RegisterOrLoginPage> {
                     ),
                   ),
 
-                // space
-                const SizedBox(height: AppSpacing.rlps),
+                  const SizedBox(height: AppSpacing.rlps),
 
-                // create account button
+                  // create account button
                   PurpleButton(
                     text: "Criar uma conta",
                     onPressed: () {

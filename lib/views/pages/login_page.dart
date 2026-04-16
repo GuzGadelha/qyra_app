@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qyra_app/auth/auth_service.dart';
-import 'package:qyra_app/pages/home_page.dart';
-import 'package:qyra_app/pages/register_page.dart';
+import 'package:qyra_app/views/pages/home_page.dart';
+import 'package:qyra_app/views/pages/register_page.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
-import 'package:qyra_app/shared/purple_button.dart';
-import 'package:qyra_app/shared/white_button.dart';
+import 'package:qyra_app/views/shared/purple_button.dart';
+import 'package:qyra_app/views/shared/white_button.dart';
 
+
+/// Screen responsible for existing user authentication.
+/// Collects credentials and interacts with the [AuthService] to log the user in.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -16,26 +19,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // get auth service
-  final authService = AuthService();
-  // text controllers
-  final _emailController = TextEditingController();
+  final authService = AuthService();  // get auth service
+  final _emailController = TextEditingController();   // text controllers
   final _passwordController = TextEditingController();
-  // variable for obscure password
-  bool _obscurePassword = true;
-  // variable for password or email error
-  bool _hasError = false;
 
-  // login button pressed
+  bool _obscurePassword = true; // variable for obscure password
+  bool _hasError = false; // variable for password or email error
+
+  /// Attempts to authenticate the user via Supabase.
+  /// Navigates to [HomePage] on success, or displays an error state on failure.
   void login() async {
     // prepare data
     final email = _emailController.text;
     final password = _passwordController.text;
+
     // attempt login...
     try {
       setState(() {
-        // clean incorrect data entries
-        _hasError = false;
+        _hasError = false;  // clean incorrect data entries
       });
 
       //  waiting supabase authentication
@@ -52,31 +53,32 @@ class _LoginPageState extends State<LoginPage> {
 
     } catch (e) {
       setState(() {
-        // show's error message
-        _hasError = true;
+        _hasError = true; // show's error message
       });
     }
   }
 
-  // UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      //
+
       appBar: AppBar(
         backgroundColor: Colors.white,
       ),
-      //
+
       body: SafeArea(
         child: SingleChildScrollView(
+
           padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.m,
               vertical: AppSpacing.l,
           ),
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+
               // logo qyra
               Container(
                 alignment: Alignment.centerLeft,
@@ -86,8 +88,10 @@ class _LoginPageState extends State<LoginPage> {
                     fit: BoxFit.contain,
                   ),
               ),
+
               // space
               const SizedBox(height: AppSpacing.m),
+
               // email
               // e-mail text above the field
               const Text(
@@ -96,7 +100,9 @@ class _LoginPageState extends State<LoginPage> {
                     color: AppColors.textPrimary,
                 ),
               ),
+
               const SizedBox(height: AppSpacing.xs),
+
               // text field for e-mail
               TextField(
                 controller: _emailController,
@@ -105,22 +111,26 @@ class _LoginPageState extends State<LoginPage> {
                   hintStyle: const TextStyle(
                       color: AppColors.textHint,
                   ),
+
                   contentPadding:  const EdgeInsets.symmetric(
                     horizontal: AppSpacing.s,
                     vertical: AppSpacing.s,
                   ),
+
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color: AppColors.borderLight,
                     ),
                   ),
+
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                         color: AppColors.borderLight,
                     ),
                   ),
+
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
@@ -129,7 +139,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
+
               const SizedBox(height: AppSpacing.m),
+
               // password
               // password text above the field
               const Text(
@@ -138,38 +150,46 @@ class _LoginPageState extends State<LoginPage> {
                     color: AppColors.textPrimary
                 ),
               ),
+
               const SizedBox(height: AppSpacing.xs),
+
               // text field for password
               TextField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   hintText: "Digite a sua senha",
+
                   hintStyle: const TextStyle(
                       color: AppColors.textHint,
                   ),
+
                   contentPadding:  const EdgeInsets.symmetric(
                     horizontal: AppSpacing.s,
                     vertical: AppSpacing.s,
                   ),
+
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                         color: AppColors.borderLight,
                     ),
                   ),
+
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                         color: AppColors.borderLight,
                     ),
                   ),
+
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color: AppColors.primaryPurple,
                     ),
                   ),
+
                   // hide password icon
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -184,6 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
+
               // error message
               if (_hasError) ...[
                 const SizedBox(height: AppSpacing.xs),
@@ -195,6 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ],
+
               // forgot password
               Align(
                 alignment: Alignment.centerRight,
@@ -209,8 +231,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              // space
+
+
               const SizedBox(height: AppSpacing.lps),
+
               // terms of use text
               const Text(
                 "Acessando a sua conta QYRA, você concorda com os nossos Termos de Uso e as nossas Políticas de Privacidade",

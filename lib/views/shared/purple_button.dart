@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_spacing.dart';
 
-import '../core/constants/app_colors.dart';
-import '../core/constants/app_spacing.dart';
-
+/// The primary action button used throughout the application.
+/// Styled with the brand's primary purple color and standard rounded corners.
 class PurpleButton extends StatelessWidget {
-  //  parameters to make a new purple button
-  //  button text and function
   final String text;
   final VoidCallback onPressed;
 
@@ -17,25 +16,27 @@ class PurpleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // Elevated Button Component
     return ElevatedButton(
-      //  Uses the function passed as a parameter
       onPressed: onPressed,
-      //  button style
       style: ElevatedButton.styleFrom(
-        //  colors
         backgroundColor: AppColors.primaryPurple,
         foregroundColor: Colors.white,
-        //  inside padding
+
+        //  vertical padding
         padding: const EdgeInsets.symmetric(
           vertical: AppSpacing.s,
         ),
-        // shape
+
+        // shape and border
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         elevation: 0,
       ),
-      // button text
+
+      // button label
       child: Text(
         text,
         style: const TextStyle(

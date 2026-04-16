@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:qyra_app/auth/auth_gate.dart';
-import 'package:qyra_app/pages/home_page.dart';
-import 'package:qyra_app/pages/sucess_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'auth/auth_gate.dart';
 
 void main() async {
   //  supabase setup
@@ -19,9 +19,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      title: "Qyra App",
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+
+      //  App font
+      theme: ThemeData(
+        textTheme: GoogleFonts.manropeTextTheme(
+          Theme.of(context).textTheme,
+        ),
+      ),
+
+      //  App start
+      home: AuthGate(),
     );
   }
 }

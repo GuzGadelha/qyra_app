@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qyra_app/core/constants/app_colors.dart';
 import 'package:qyra_app/core/constants/app_spacing.dart';
-import 'package:qyra_app/shared/purple_button.dart';
-import 'package:qyra_app/shared/white_button.dart';
+import 'package:qyra_app/views/shared/purple_button.dart';
 import 'home_page.dart';
 
 class SuccessPage extends StatelessWidget {
@@ -18,6 +17,7 @@ class SuccessPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+
             //  Container with top image
             Container(
               alignment: Alignment.topCenter,
@@ -32,10 +32,12 @@ class SuccessPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                 vertical: AppSpacing.s,
               ),
+
               // column for both texts be align in center
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+
                   //  Big text
                   const Text(
                         'A sua conta foi criada com sucesso!',
@@ -46,8 +48,9 @@ class SuccessPage extends StatelessWidget {
                           color: AppColors.textPrimary,
                         ),
                       ),
-                  //  space
+
                   const SizedBox(height: AppSpacing.s),
+
                   //  sub text
                   const Text(
                         'Agora é só seguir para a próxima etapa!✨',
@@ -61,7 +64,6 @@ class SuccessPage extends StatelessWidget {
               ),
             ),
 
-            //  space
             const SizedBox(height: AppSpacing.sps),
 
             // continue button
